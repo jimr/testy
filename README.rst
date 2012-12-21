@@ -27,7 +27,7 @@ Example Usage
     import re
     import unittest
 
-    from testy.assertions import assert_equal, assert_raises, assert_matches_regex
+    from testy.assertions import assert_equal, assert_raises, assert_match_regex
 
     class MyTestCase(unittest.TestCase):
         def setUp(self):
@@ -42,7 +42,7 @@ Example Usage
 
         def test_pattern(self):
             pattern = re.compile('\w')
-            assert_matches_regex(pattern, 'abc')
+            assert_match_regex(pattern, 'abc')
 
         def tearDown(self):
             self.x = None
