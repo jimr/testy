@@ -6,7 +6,7 @@ All the assertions from Testify_ but with py3k support.
 
 .. _Testify: https://github.com/Yelp/Testify
 
-The only requirement is `six` (for combined Python 2.x & 3.x support):
+The only requirement is `six` (for combined Python 2.x & 3.x support)::
     
     pip install -r requirements.txt
 
