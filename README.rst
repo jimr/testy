@@ -11,6 +11,14 @@ The only requirement is `six` (for combined Python 2.x & 3.x support):
     pip install -r requirements.txt
 
 
+Installation
+============
+
+Install direct from the cheese shop::
+
+    pip install testy
+
+
 Example Usage
 =============
 
