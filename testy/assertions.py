@@ -6,6 +6,7 @@ from __future__ import absolute_import, with_statement
 import contextlib
 import re
 import six
+import sys
 
 from . import utils
 
@@ -146,7 +147,8 @@ def assert_raises_and_contains(expected_exception_class, strings, callable_obj, 
     """
     try:
         callable_obj(*args, **kwargs)
-    except expected_exception_class as e:
+    except expected_exception_class:
+        _, e, _ = sys.exc_info()
         message = str(e).lower()
         if isinstance(strings, STRING_TYPE):
             strings = [strings]
