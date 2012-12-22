@@ -1,4 +1,8 @@
+*.sw[op]
 *.py[cod]
 *.egg-info
 dist
 build
+tox-local.ini
+.tox
+*/__pycache__
