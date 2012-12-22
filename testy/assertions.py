@@ -1,3 +1,6 @@
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
+#
 # This file is almost entirely borrowed from
 # https://github.com/Yelp/Testify/blob/master/testify/assertions.py
 # The only modfifications are for py3k support
@@ -362,6 +365,8 @@ def assert_all_match_regex(pattern, values, msg="expected %(value)r to match %(p
 def assert_match_regex(pattern, value, *args, **kwargs):
     """Assert that a single value matches a regex pattern."""
     assert_all_match_regex(pattern, [value], *args, **kwargs)
+
+assert_matches_regex = assert_match_regex
 
 
 def assert_any_match_regex(pattern, values, msg="expected at least one %(values)r to match %(pattern)r"):

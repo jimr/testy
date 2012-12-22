@@ -16,7 +16,7 @@ def get_init_val(val, packages=PACKAGES):
 
 
 setup(
-    name='%s' % get_init_val('title'),
+    name=get_init_val('title'),
     version=get_init_val('version'),
     provides=['testy'],
     description=get_init_val('description'),
