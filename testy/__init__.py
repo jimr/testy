@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 __title__ = 'testy'
-__version__ = '0.2'
+__version__ = '0.3'
 __description__ = 'Python unittest helpers adapted from Testify'
 __url__ = 'https://github.com/jimr/testy'
 __author__ = 'James Rutherford'
@@ -16,7 +16,7 @@ from .assertions import (
     assert_almost_equal, assert_within_tolerance, assert_not_equal, assert_lt,
     assert_lte, assert_gt, assert_gte, assert_in_range, assert_between,
     assert_in, assert_not_in, assert_all_in, assert_starts_with,
-    assert_not_reached, assert_rows_equal, assert_length, assert_call,
+    assert_not_reached, assert_rows_equal, assert_length,
     assert_is, assert_is_not, assert_all_match_regex, assert_match_regex,
     assert_any_match_regex, assert_all_not_match_regex, assert_sets_equal,
     assert_dicts_equal, assert_dict_subset, assert_subset, assert_list_prefix,

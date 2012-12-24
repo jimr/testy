@@ -11,6 +11,8 @@ the hope of getting the broadest code coverage.
 """
 from __future__ import with_statement
 
+import datetime
+import re
 import unittest
 
 from testy.assertions import (
@@ -18,7 +20,7 @@ from testy.assertions import (
     assert_almost_equal, assert_within_tolerance, assert_not_equal, assert_lt,
     assert_lte, assert_gt, assert_gte, assert_in_range, assert_between,
     assert_in, assert_not_in, assert_all_in, assert_starts_with,
-    assert_not_reached, assert_rows_equal, assert_length, assert_call,
+    assert_not_reached, assert_rows_equal, assert_length,
     assert_is, assert_is_not, assert_all_match_regex, assert_match_regex,
     assert_any_match_regex, assert_all_not_match_regex, assert_sets_equal,
     assert_dicts_equal, assert_dict_subset, assert_subset, assert_list_prefix,
@@ -99,74 +101,134 @@ class PositiveAssertionsTestCase(unittest.TestCase):
         assert_between(1, 3, 5)
         assert_between(1, 3, 3)
 
-#    def test_assert_in(self):
-#        assert_in()
-#
-#    def test_assert_not_in(self):
-#        assert_not_in()
-#
-#    def test_assert_all_in(self):
-#        assert_all_in()
-#
-#    def test_assert_starts_with(self):
-#        assert_starts_with()
-#
-#    def test_assert_not_reached(self):
-#        assert_not_reached()
-#
-#    def test_assert_rows_equal(self):
-#        assert_rows_equal()
-#
-#    def test_assert_length(self):
-#        assert_length()
-#
-#    def test_assert_call(self):
-#        assert_call()
-#
-#    def test_assert_is(self):
-#        assert_is()
-#
-#    def test_assert_is_not(self):
-#        assert_is_not()
-#
-#    def test_assert_all_match_regex(self):
-#        assert_all_match_regex()
-#
-#    def test_assert_match_regex(self):
-#        assert_match_regex()
-#
-#    def test_assert_any_match_regex(self):
-#        assert_any_match_regex()
-#
-#    def test_assert_all_not_match_regex(self):
-#        assert_all_not_match_regex()
-#
-#    def test_assert_sets_equal(self):
-#        assert_sets_equal()
-#
-#    def test_assert_dicts_equal(self):
-#        assert_dicts_equal()
-#
-#    def test_assert_dict_subset(self):
-#        assert_dict_subset()
-#
-#    def test_assert_subset(self):
-#        assert_subset()
-#
-#    def test_assert_list_prefix(self):
-#        assert_list_prefix()
-#
-#    def test_assert_sorted_equal(self):
-#        assert_sorted_equal()
-#
-#    def test_assert_isinstance(self):
-#        assert_isinstance()
-#
-#    def test_assert_datetimes_equal(self):
-#        assert_datetimes_equal()
-#
-#    def test_assert_exactly_one(self):
-#        assert_exactly_one()
+    def test_assert_in(self):
+        assert_in(2, [1,2,3])
+        assert_in('b', 'abc')
+
+    def test_assert_not_in(self):
+        assert_not_in(1, [2,3,4])
+        assert_not_in('a', 'bcd')
+
+    def test_assert_all_in(self):
+        assert_all_in([2,3,4], [1,2,3,4,5,6])
+        assert_all_in('bc1', 'abc123')
+
+    def test_assert_starts_with(self):
+        assert_starts_with([1,2,3,4,5,6], [1,2,3])
+        assert_starts_with('abcdef', 'abc')
+
+    def test_assert_not_reached(self):
+        try:
+            assert_not_reached()
+        except AssertionError:
+            pass
+
+    def test_assert_rows_equal(self):
+        row1 = dict(a=1, b=2)
+        row2 = dict(b=2, a=1)
+        assert_rows_equal([row1, row2], [row2, row1])
+
+    def test_assert_length(self):
+        assert_length('abc', 3)
+
+    def test_assert_is(self):
+        x = 3
+        y = x
+        assert_is(x, y)
+
+        x = 300
+        assert_is(x, 300)
+
+        assert_is(None, None)
+
+        from testy.aliases import eq
+        assert_is(eq, assert_equal)
+
+    def test_assert_is_not(self):
+        assert_is_not(assert_is, assert_is_not)
+        assert_is_not('abc', list('abc'))
+
+        l = [1, 2, 3]
+        assert_is_not(l, l[:])
+
+    def test_assert_all_match_regex(self):
+        values = [
+            'abc',
+            '123 abc def',
+        ]
+        pattern = re.compile(r'\w+')
+        assert_all_match_regex(pattern, values)
+
+    def test_assert_match_regex(self):
+        pattern = re.compile(r'\w+')
+        assert_match_regex(pattern, 'abc 123')
+
+    def test_assert_any_match_regex(self):
+        values = [
+            '"$',
+            'abc',
+            '@#~',
+        ]
+        pattern = re.compile(r'\w+')
+        assert_any_match_regex(pattern, values)
+
+    def test_assert_all_not_match_regex(self):
+        values = [
+            '"$',
+            '@#~',
+        ]
+        pattern = re.compile(r'\w+')
+        assert_all_not_match_regex(pattern, values)
+
+    def test_assert_sets_equal(self):
+        s1 = set(['a', 'b', 'c', 1, 2, 3])
+        s2 = set([1, 'a', 3, 'b', 'c', 2])
+        assert_sets_equal(s1, s2)
+
+    def test_assert_dicts_equal(self):
+        d1 = dict(a=3, b=True, c=None)
+        d2 = dict(b=True, c=None, a=3)
+        assert_dicts_equal(d1, d2)
+
+    def test_assert_dict_subset(self):
+        d1 = dict(b=True)
+        d2 = dict(a=3, b=True, c=None)
+        assert_dict_subset(d1, d2)
+
+    def test_assert_subset(self):
+        s1 = set([3, 'b', 'c', 2])
+        s2 = set(['a', 'b', 'c', 1, 2, 3])
+        assert_subset(s1, s2)
+
+    def test_assert_list_prefix(self):
+        l1 = [1, 2, 3]
+        l2 = [1, 2, 3, 'a', 'b', 'c']
+        assert_list_prefix(l1, l2)
+
+    def test_assert_sorted_equal(self):
+        s1 = set(['a', 'b', 'c'])
+        s2 = set(['b', 'c', 'a'])
+        assert_sorted_equal(s1, s2)
+
+    def test_assert_isinstance(self):
+        class A(object):
+            pass
+        assert_isinstance(A(), A)
+        assert_isinstance(dict(a=1), dict)
+
+    def test_assert_datetimes_equal(self):
+        # times are compared to the millisecond, so this ought to pass
+        t0 = datetime.datetime.now()
+        t1 = datetime.datetime.now()
+        assert_datetimes_equal(t0, t1)
+
+        t0 = datetime.datetime(1970, 1, 1)
+        t1 = datetime.datetime(1970, 1, 1)
+        assert_datetimes_equal(t0, t1)
+
+    def test_assert_exactly_one(self):
+        assert_exactly_one(None, False, None, None)
+        assert_exactly_one(None, True, None, None)
 
 
 class NegativeAssertionsTestCase(unittest.TestCase):

@@ -296,9 +296,27 @@ def assert_all_in(left, right):
 
 
 def assert_starts_with(val, prefix):
-    """Assert that val.startswith(prefix)."""
+    """Assert that val starts with prefix.
+
+    Applies to any iterable, not just strings.
+
+    """
+    try:
+        iter(val)
+    except:
+        assert False, "%(val)r is not iterable" % locals()
+    try:
+        iter(prefix)
+    except:
+        assert False, "%(prefix)r is not iterable" % locals()
+
     msg = "%(val)r does not start with %(prefix)r" % locals()
-    assert val.startswith(prefix), msg
+    for i, (l, r) in enumerate(zip(val, prefix)):
+        assert_equal(l, r, msg)
+
+    msg = "%(val)r shorter than %(prefix)r, so can't start with it" % locals()
+    length = len(list(prefix))
+    assert_equal(length, i + 1, msg)
 
 
 def assert_not_reached(message=None):
@@ -329,13 +347,6 @@ def assert_length(sequence, expected, message=None):
     message = message or "%(sequence)s has length %(length)s expected %(expected)s"
     length = len(list(sequence))
     assert length == expected, message % locals()
-
-
-def assert_call(turtle, call_idx, *args, **kwargs):
-    """Assert that a function was called on turtle with the correct args."""
-    actual = turtle.calls[call_idx] if turtle.calls else None
-    msg = "Call %s expected %s, was %s" % (call_idx, (args, kwargs), actual)
-    assert actual == (args, kwargs), msg
 
 
 def assert_is(left, right, msg="expected %(left)r is %(right)r"):
@@ -398,6 +409,8 @@ def assert_all_not_match_regex(pattern, values, msg="expected %(value)r to not m
     """
     for value in values:
         assert not re.match(pattern, value), msg % {'value':value, 'pattern':pattern}
+
+assert_none_match_regex = assert_all_not_match_regex
 
 
 def assert_sets_equal(left, right, msg="expected %(left)r == %(right)r [left has:%(extra_left)r, right has:%(extra_right)r]"):
