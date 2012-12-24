@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """Tests for tests!
@@ -103,19 +103,19 @@ class PositiveAssertionsTestCase(unittest.TestCase):
         assert_between(1, 3, 3)
 
     def test_assert_in(self):
-        assert_in(2, [1,2,3])
+        assert_in(2, [1, 2, 3])
         assert_in('b', 'abc')
 
     def test_assert_not_in(self):
-        assert_not_in(1, [2,3,4])
+        assert_not_in(1, [2, 3, 4])
         assert_not_in('a', 'bcd')
 
     def test_assert_all_in(self):
-        assert_all_in([2,3,4], [1,2,3,4,5,6])
+        assert_all_in([2, 3, 4], [1, 2, 3, 4, 5, 6])
         assert_all_in('bc1', 'abc123')
 
     def test_assert_starts_with(self):
-        assert_starts_with([1,2,3,4,5,6], [1,2,3])
+        assert_starts_with([1, 2, 3, 4, 5, 6], [1, 2, 3])
         assert_starts_with('abcdef', 'abc')
 
     def test_assert_not_reached(self):
