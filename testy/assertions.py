@@ -150,8 +150,9 @@ def assert_raises_and_contains(expected_exception_class, strings, callable_obj, 
     """
     try:
         callable_obj(*args, **kwargs)
-    except expected_exception_class:
+    except:
         _, e, _ = sys.exc_info()
+        assert_isinstance(e, expected_exception_class)
         message = str(e).lower()
         if isinstance(strings, STRING_TYPE):
             strings = [strings]
@@ -165,8 +166,9 @@ def assert_raises_and_contains(expected_exception_class, strings, callable_obj, 
 def _assert_raises_context_manager(exception_class):
     try:
         yield
-    except exception_class:
-        return
+    except:
+        _, ex, _ = sys.exc_info()
+        assert_isinstance(ex, exception_class)
     else:
         assert_not_reached("No exception was raised (expected %r)" %
                            exception_class)

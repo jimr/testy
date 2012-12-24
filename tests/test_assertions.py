@@ -11,9 +11,10 @@ the hope of getting the broadest code coverage.
 """
 from __future__ import with_statement
 
-import datetime
 import re
 import unittest
+
+from datetime import datetime
 
 from testy.assertions import (
     assert_raises, assert_raises_and_contains, assert_equal,
@@ -218,12 +219,12 @@ class PositiveAssertionsTestCase(unittest.TestCase):
 
     def test_assert_datetimes_equal(self):
         # times are compared to the millisecond, so this ought to pass
-        t0 = datetime.datetime.now()
-        t1 = datetime.datetime.now()
+        t0 = datetime.now()
+        t1 = datetime.now()
         assert_datetimes_equal(t0, t1)
 
-        t0 = datetime.datetime(1970, 1, 1)
-        t1 = datetime.datetime(1970, 1, 1)
+        t0 = datetime(1970, 1, 1)
+        t1 = datetime(1970, 1, 1)
         assert_datetimes_equal(t0, t1)
 
     def test_assert_exactly_one(self):
@@ -237,218 +238,164 @@ class NegativeAssertionsTestCase(unittest.TestCase):
         class MyException(Exception):
             pass
 
-        try:
+        with assert_raises(AssertionError):
             with assert_raises(TypeError):
                 raise MyException()
-        except MyException:
-            pass
 
     def test_assert_raises_and_contains(self):
         def fail():
             raise ValueError("choose one of the correct values")
 
-        try:
-            assert_raises_and_contains(ValueError, "one of", fail)
-        except AssertionError:
-            pass
+        with assert_raises(AssertionError):
+            assert_raises_and_contains(ValueError, "two of", fail)
 
     def test_assert_equal(self):
-        try:
-            assert_equal(1, 1)
-        except AssertionError:
-            pass
+        with assert_raises(AssertionError):
+            assert_equal(1, 2)
 
     def test_assert_almost_equal(self):
-        try:
+        with assert_raises(AssertionError):
             assert_almost_equal(1, 1.01, 2)
-        except AssertionError:
-            pass
 
     def test_assert_within_tolerance(self):
-        try:
+        with assert_raises(AssertionError):
             assert_within_tolerance(5, 5.1, 0.01)
-        except AssertionError:
-            pass
 
-#    def test_assert_not_equal(self):
-#        try:
-#            assert_not_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_lt(self):
-#        try:
-#            assert_lt()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_lte(self):
-#        try:
-#            assert_lte()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_gt(self):
-#        try:
-#            assert_gt()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_gte(self):
-#        try:
-#            assert_gte()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_in_range(self):
-#        try:
-#            assert_in_range()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_between(self):
-#        try:
-#            assert_between()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_in(self):
-#        try:
-#            assert_in()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_not_in(self):
-#        try:
-#            assert_not_in()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_all_in(self):
-#        try:
-#            assert_all_in()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_starts_with(self):
-#        try:
-#            assert_starts_with()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_not_reached(self):
-#        try:
-#            assert_not_reached()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_rows_equal(self):
-#        try:
-#            assert_rows_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_length(self):
-#        try:
-#            assert_length()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_call(self):
-#        try:
-#            assert_call()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_is(self):
-#        try:
-#            assert_is()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_is_not(self):
-#        try:
-#            assert_is_not()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_all_match_regex(self):
-#        try:
-#            assert_all_match_regex()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_match_regex(self):
-#        try:
-#            assert_match_regex()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_any_match_regex(self):
-#        try:
-#            assert_any_match_regex()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_all_not_match_regex(self):
-#        try:
-#            assert_all_not_match_regex()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_sets_equal(self):
-#        try:
-#            assert_sets_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_dicts_equal(self):
-#        try:
-#            assert_dicts_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_dict_subset(self):
-#        try:
-#            assert_dict_subset()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_subset(self):
-#        try:
-#            assert_subset()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_list_prefix(self):
-#        try:
-#            assert_list_prefix()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_sorted_equal(self):
-#        try:
-#            assert_sorted_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_isinstance(self):
-#        try:
-#            assert_isinstance()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_datetimes_equal(self):
-#        try:
-#            assert_datetimes_equal()
-#        except AssertionError:
-#            pass
-#
-#    def test_assert_exactly_one(self):
-#        try:
-#            assert_exactly_one()
-#        except AssertionError:
-#            pass
+    def test_assert_not_equal(self):
+        with assert_raises(AssertionError):
+            assert_not_equal(1, 1)
+
+    def test_assert_lt(self):
+        with assert_raises(AssertionError):
+            assert_lt(3, 2)
+
+    def test_assert_lte(self):
+        with assert_raises(AssertionError):
+            assert_lte(10, 1)
+
+    def test_assert_gt(self):
+        with assert_raises(AssertionError):
+            assert_gt(1, 4)
+
+    def test_assert_gte(self):
+        with assert_raises(AssertionError):
+            assert_gte(3, 5)
+
+    def test_assert_in_range(self):
+        with assert_raises(AssertionError):
+            assert_in_range(1, 2, 4)
+
+    def test_assert_between(self):
+        with assert_raises(AssertionError):
+            assert_between(1, 3, 2)
+
+    def test_assert_in(self):
+        with assert_raises(AssertionError):
+            assert_in('a', [1, 2, 3])
+
+    def test_assert_not_in(self):
+        with assert_raises(AssertionError):
+            assert_not_in(1, [1, 2, 3])
+
+    def test_assert_all_in(self):
+        with assert_raises(AssertionError):
+            assert_all_in([1, 2], [1, 3])
+
+    def test_assert_starts_with(self):
+        with assert_raises(AssertionError):
+            assert_starts_with('abc123', 'bc')
+
+    def test_assert_not_reached(self):
+        # The only way to test this assertion negatively is to not reach it :)
+        pass
+
+    def test_assert_rows_equal(self):
+        with assert_raises(AssertionError):
+            row1 = dict(a=1, b=2)
+            row2 = dict(b=3, a=1)
+            row3 = dict(b=1, a=1)
+            assert_rows_equal([row1, row2], [row2, row3])
+
+    def test_assert_length(self):
+        with assert_raises(AssertionError):
+            assert_length('abc', 4)
+
+    def test_assert_is(self):
+        with assert_raises(AssertionError):
+            assert_is(True, False)
+
+    def test_assert_is_not(self):
+        with assert_raises(AssertionError):
+            assert_is_not(True, True)
+
+    def test_assert_all_match_regex(self):
+        with assert_raises(AssertionError):
+            values = [
+                '$%`',
+                '123 abc def',
+            ]
+            pattern = re.compile(r'\w+')
+            assert_all_match_regex(pattern, values)
+
+    def test_assert_match_regex(self):
+        with assert_raises(AssertionError):
+            pattern = re.compile(r'\w+')
+            assert_match_regex(pattern, '$')
+
+    def test_assert_any_match_regex(self):
+        with assert_raises(AssertionError):
+            values = [
+                '"$',
+                '@#~',
+            ]
+            pattern = re.compile(r'\w+')
+            assert_any_match_regex(pattern, values)
+
+    def test_assert_all_not_match_regex(self):
+        with assert_raises(AssertionError):
+            values = [
+                '"$',
+                'abc',
+                '@#~',
+            ]
+            pattern = re.compile(r'\w+')
+            assert_all_not_match_regex(pattern, values)
+
+    def test_assert_sets_equal(self):
+        with assert_raises(AssertionError):
+            assert_sets_equal(set([1, 2, 3]), set([1, 'b', 'c']))
+
+    def test_assert_dicts_equal(self):
+        with assert_raises(AssertionError):
+            assert_dicts_equal(dict(a=1), dict(a=2))
+
+    def test_assert_dict_subset(self):
+        with assert_raises(AssertionError):
+            assert_dict_subset(dict(a=2), dict(b=3))
+
+    def test_assert_subset(self):
+        with assert_raises(AssertionError):
+            assert_subset(set([1, 2, 3]), set([1, 2]))
+
+    def test_assert_list_prefix(self):
+        with assert_raises(AssertionError):
+            assert_list_prefix([1, 2, 3], [4, 5, 6])
+
+    def test_assert_sorted_equal(self):
+        with assert_raises(AssertionError):
+            assert_sorted_equal([1, 2, 3], [3, 2, 3])
+
+    def test_assert_isinstance(self):
+        with assert_raises(AssertionError):
+            assert_isinstance(dict(), list)
+
+    def test_assert_datetimes_equal(self):
+        with assert_raises(AssertionError):
+            assert_datetimes_equal(datetime(1970, 1, 1), datetime.now())
+
+    def test_assert_exactly_one(self):
+        with assert_raises(AssertionError):
+            assert_exactly_one(True, False, None, 1)
 
 
 if __name__ == '__main__':
