@@ -10,7 +10,7 @@ The only requirement is ``six`` (for combined Python 2.x & 3.x support)::
     
     pip install -r requirements.txt
 
-Should work OK with Python 2.5-3.3.
+Should work OK with Python 2.5-3.3 and pypy 1.9.
 
 
 Installation
