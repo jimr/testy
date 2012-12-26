@@ -2,17 +2,15 @@
 Testy
 =====
 
-All the assertions from Testify_ but with py3k support.
+All the assertions from Testify_ but cleaned up a bit & with added py3k support.
 
 .. _Testify: https://github.com/Yelp/Testify
 
-The only requirement is ``six`` (for combined Python 2.x & 3.x support)::
-    
-    pip install -r requirements.txt
-
-Should work OK with Python 2.5-3.3 and pypy 1.9. To make sure it will work for you::
+Should work with Python 2.5-3.3 and pypy 1.9. To make sure it will work for you::
 
     python setup.py test
+
+There are no dependencies.
 
 
 Installation

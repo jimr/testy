@@ -39,6 +39,11 @@ class PositiveAssertionsTestCase(unittest.TestCase):
         with assert_raises(Exception):
             raise TypeError()
 
+        def raise_it():
+            raise Exception()
+
+        assert_raises(Exception, raise_it)
+
     def test_assert_raises_and_contains(self):
         def fail():
             raise ValueError("choose one of the correct values")
@@ -129,6 +134,10 @@ class PositiveAssertionsTestCase(unittest.TestCase):
         row2 = dict(b=2, a=1)
         assert_rows_equal([row1, row2], [row2, row1])
 
+        row1 = [1, 2]
+        row2 = [3, 4]
+        assert_rows_equal([row1, row2], [row2, row1])
+
     def test_assert_length(self):
         assert_length('abc', 3)
 
@@ -191,6 +200,10 @@ class PositiveAssertionsTestCase(unittest.TestCase):
         d2 = dict(b=True, c=None, a=3)
         assert_dicts_equal(d1, d2)
 
+        d1 = dict(a=3, b=True, c=None, d=4)
+        d2 = dict(b=True, c=None, a=3)
+        assert_dicts_equal(d1, d2, ignore_keys=['d'])
+
     def test_assert_dict_subset(self):
         d1 = dict(b=True)
         d2 = dict(a=3, b=True, c=None)
@@ -242,12 +255,22 @@ class NegativeAssertionsTestCase(unittest.TestCase):
             with assert_raises(TypeError):
                 raise MyException()
 
+        with assert_raises(AssertionError):
+            with assert_raises(Exception):
+                pass
+
     def test_assert_raises_and_contains(self):
+        def no_fail():
+            return
+
         def fail():
             raise ValueError("choose one of the correct values")
 
         with assert_raises(AssertionError):
             assert_raises_and_contains(ValueError, "two of", fail)
+
+        with assert_raises(AssertionError):
+            assert_raises_and_contains(Exception, "anything", no_fail)
 
     def test_assert_equal(self):
         with assert_raises(AssertionError):
@@ -366,8 +389,14 @@ class NegativeAssertionsTestCase(unittest.TestCase):
             assert_sets_equal(set([1, 2, 3]), set([1, 'b', 'c']))
 
     def test_assert_dicts_equal(self):
+        class A(object):
+            pass
+
         with assert_raises(AssertionError):
-            assert_dicts_equal(dict(a=1), dict(a=2))
+            assert_dicts_equal(
+                dict(a=[1, 2], b=dict(c=1), c=A(), d=(1, 2, 3)),
+                dict(a=[1, 2, 3], b=dict(d=2), c=A(), d=(1, 2))
+            )
 
     def test_assert_dict_subset(self):
         with assert_raises(AssertionError):
@@ -396,6 +425,16 @@ class NegativeAssertionsTestCase(unittest.TestCase):
     def test_assert_exactly_one(self):
         with assert_raises(AssertionError):
             assert_exactly_one(True, False, None, 1)
+
+
+class FailureAssertionsTestCase(unittest.TestCase):
+    """Throw garbage at assertions to trip them over."""
+    def test_assert_starts_with(self):
+        with assert_raises(TypeError):
+            assert_starts_with(False, 'abc123')
+
+        with assert_raises(TypeError):
+            assert_starts_with('abc123', False)
 
 
 if __name__ == '__main__':

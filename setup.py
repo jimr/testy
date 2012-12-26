@@ -44,7 +44,6 @@ setup(
         'Topic :: Software Development :: Testing',
         ],
     license=get_init_val('license'),
-    install_requires=['six'],
     packages=PACKAGES,
     test_suite='tests',
 )

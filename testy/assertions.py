@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # This file is almost entirely borrowed from
@@ -8,16 +8,14 @@ from __future__ import absolute_import, with_statement
 
 import contextlib
 import re
-import six
 import sys
 
 from . import utils
 
-
-if six.PY3:
-    STRING_TYPE = str
-else:
+try:
     STRING_TYPE = basestring
+except: # py3k
+    STRING_TYPE = str
 
 
 def _val_subtract(val1, val2, dict_subtractor, list_subtractor):
@@ -219,42 +217,27 @@ def assert_within_tolerance(lval, rval, tolerance, message=None):
 
 def assert_not_equal(lval, rval, message=None):
     """Assert that lval and rval are unequal to each other."""
-    if message:
-        assert lval != rval, message
-    else:
-        assert lval != rval, 'assertion failed: %r != %r' % (lval, rval)
+    assert lval != rval, message or 'assertion failed: %r != %r' % (lval, rval)
 
 
 def assert_lt(lval, rval, message=None):
     """Assert that lval is less than rval."""
-    if message:
-        assert lval < rval, message
-    else:
-        assert lval < rval, 'assertion failed: %r < %r' % (lval, rval)
+    assert lval < rval, message or 'assertion failed: %r < %r' % (lval, rval)
 
 
 def assert_lte(lval, rval, message=None):
     """Assert that lval is less than or equal to rval"""
-    if message:
-        assert lval <= rval, message
-    else:
-        assert lval <= rval, 'assertion failed: %r <= %r' % (lval, rval)
+    assert lval <= rval, message or 'assertion failed: %r <= %r' % (lval, rval)
 
 
 def assert_gt(lval, rval, message=None):
     """Assert that lval is greater than rval."""
-    if message:
-        assert lval > rval, message
-    else:
-        assert lval > rval, 'assertion failed: %r > %r' % (lval, rval)
+    assert lval > rval, message or 'assertion failed: %r > %r' % (lval, rval)
 
 
 def assert_gte(lval, rval, message=None):
     """Assert that lval is greater than or equal to rval"""
-    if message:
-        assert lval >= rval, message
-    else:
-        assert lval >= rval, 'assertion failed: %r >= %r' % (lval, rval)
+    assert lval >= rval, message or 'assertion failed: %r >= %r' % (lval, rval)
 
 
 def assert_in_range(val, start, end, message=None, inclusive=False):
@@ -272,14 +255,20 @@ def assert_between(a, b, c):
     assert_in_range(b, a, c, inclusive=True)
 
 
-def assert_in(item, sequence, msg="assertion failed: expected %(item)r in %(sequence)r"):
+def assert_in(item, sequence, message=None):
     """Assert that the item is in the sequence."""
-    assert item in sequence, msg % {'item':item, 'sequence':sequence}
+    if not message:
+        message = (
+            "assertion failed: expected %(item)r in %(sequence)r" % locals()
+        )
+    assert item in sequence, message
 
 
-def assert_not_in(item, sequence, msg="assertion failed: expected %(item)r not in %(sequence)r"):
+def assert_not_in(item, sequence, message=None):
     """Assert that the item is not in the sequence."""
-    assert item not in sequence, msg % {'item':item, 'sequence':sequence}
+    assert item not in sequence, (
+        "assertion failed: expected %(item)r not in %(sequence)r" % locals()
+    )
 
 
 def assert_all_in(left, right):
@@ -293,11 +282,11 @@ def assert_all_in(left, right):
             unmatching.append(item)
     if unmatching:
         raise AssertionError(
-            'The following items were not found in not found in %s: %s' % (right, unmatching)
+            "%(unmatching)r missing from %(right)r" % locals()
         )
 
 
-def assert_starts_with(val, prefix):
+def assert_starts_with(val, prefix, message=None):
     """Assert that val starts with prefix.
 
     Applies to any iterable, not just strings.
@@ -306,17 +295,21 @@ def assert_starts_with(val, prefix):
     try:
         iter(val)
     except:
-        assert False, "%(val)r is not iterable" % locals()
+        raise TypeError("%(val)r is not iterable" % locals())
+
     try:
         iter(prefix)
     except:
-        assert False, "%(prefix)r is not iterable" % locals()
+        raise TypeError("%(prefix)r is not iterable" % locals())
 
-    msg = "%(val)r does not start with %(prefix)r" % locals()
+    msg = message or "%(val)r does not start with %(prefix)r" % locals()
     for i, (l, r) in enumerate(zip(val, prefix)):
         assert_equal(l, r, msg)
 
-    msg = "%(val)r shorter than %(prefix)r, so can't start with it" % locals()
+    msg = (
+        message or
+        "%(val)r shorter than %(prefix)r, so can't start with it" % locals()
+    )
     length = len(list(prefix))
     assert_equal(length, i + 1, msg)
 
@@ -346,22 +339,27 @@ def assert_rows_equal(rows1, rows2):
 
 def assert_length(sequence, expected, message=None):
     """Assert a sequence or iterable has an expected length."""
-    message = message or "%(sequence)s has length %(length)s expected %(expected)s"
     length = len(list(sequence))
-    assert length == expected, message % locals()
+    assert length == expected, (message or
+        "%(sequence)s has length %(length)s expected %(expected)s" % locals()
+    )
 
 
-def assert_is(left, right, msg="expected %(left)r is %(right)r"):
+def assert_is(left, right, message=None):
     """Assert that left and right are the same object"""
-    assert left is right, msg % {'left':left, 'right': right}
+    assert left is right, (
+        message or "expected %(left)r is %(right)r" % locals()
+    )
 
 
-def assert_is_not(left, right, msg="expected %(left)r is not %(right)r"):
-    """Assert that left and right are the same object"""
-    assert left is not right, msg % {'left':left, 'right':right}
+def assert_is_not(left, right, message=None):
+    """Assert that left and right are not the same object"""
+    assert left is not right, (
+        message or "expected %(left)r is not %(right)r" % locals()
+    )
 
 
-def assert_all_match_regex(pattern, values, msg="expected %(value)r to match %(pattern)r"):
+def assert_all_match_regex(pattern, values, message=None):
     """Assert that all values in an iterable match a regex pattern.
 
     Args:
@@ -372,7 +370,9 @@ def assert_all_match_regex(pattern, values, msg="expected %(value)r to match %(p
 
     """
     for value in values:
-        assert re.match(pattern, value), msg % {'value':value, 'pattern':pattern}
+        if not message:
+            message = "expected %(value)r to match %(pattern)r" % locals()
+        assert re.match(pattern, value), message
 
 
 def assert_match_regex(pattern, value, *args, **kwargs):
@@ -382,7 +382,7 @@ def assert_match_regex(pattern, value, *args, **kwargs):
 assert_matches_regex = assert_match_regex
 
 
-def assert_any_match_regex(pattern, values, msg="expected at least one %(values)r to match %(pattern)r"):
+def assert_any_match_regex(pattern, values, message=None):
     """Assert that at least one value in an iterable matches a regex pattern.
 
     Args:
@@ -396,10 +396,14 @@ def assert_any_match_regex(pattern, values, msg="expected at least one %(values)
         if re.match(pattern, value) is not None:
             return
 
-    raise AssertionError(msg % {'values':values, 'pattern':pattern})
+    if not message:
+        message = (
+            "expected at least one %(values)r to match %(pattern)r" % locals()
+        )
+    raise AssertionError(message)
 
 
-def assert_all_not_match_regex(pattern, values, msg="expected %(value)r to not match %(pattern)r"):
+def assert_all_not_match_regex(pattern, values, message=None):
     """Assert that all values don't match a regex pattern.
 
     Args:
@@ -410,25 +414,28 @@ def assert_all_not_match_regex(pattern, values, msg="expected %(value)r to not m
 
     """
     for value in values:
-        assert not re.match(pattern, value), msg % {'value':value, 'pattern':pattern}
+        if not message:
+            message = "expected %(value)r to not match %(pattern)r" % locals()
+        assert not re.match(pattern, value), message
 
 assert_none_match_regex = assert_all_not_match_regex
 
 
-def assert_sets_equal(left, right, msg="expected %(left)r == %(right)r [left has:%(extra_left)r, right has:%(extra_right)r]"):
+def assert_sets_equal(left, right, message=None):
     """Assert that two sets are equal."""
     if left != right:
         extra_left = left - right
         extra_right = right - left
-        raise AssertionError(msg % {
-            'left': left,
-            'right': right,
-            'extra_left': extra_left,
-            'extra_right': extra_right,
-        })
+        if not message:
+            message = (
+                "expected %(left)r == %(right)r "
+                "[left has:%(extra_left)r, "
+                "right has:%(extra_right)r]"
+            ) % locals()
+        raise AssertionError(message)
 
 
-def assert_dicts_equal(left, right, ignore_keys=None, msg="expected %(left)r == %(right)r [left has:%(extra_left)r, right has:%(extra_right)r]"):
+def assert_dicts_equal(left, right, ignore_keys=None, message=None):
     """Assert that two dictionarys are equal (optionally ignoring certain keys)."""
     if ignore_keys is not None:
         left = dict((k, left[k]) for k in left if k not in ignore_keys)
@@ -439,16 +446,21 @@ def assert_dicts_equal(left, right, ignore_keys=None, msg="expected %(left)r == 
 
     extra_left = _dict_subtract(left, right)
     extra_right = _dict_subtract(right, left)
-    raise AssertionError(msg % {
-        'left': left,
-        'right': right,
-        'extra_left': extra_left,
-        'extra_right': extra_right,
-    })
+    if not message:
+        message = (
+            "expected %(left)r == %(right)r "
+            "[left has:%(extra_left)r, "
+            "right has:%(extra_right)r]"
+        ) % locals()
+    raise AssertionError(message)
 
 
-def assert_dict_subset(left, right, msg="expected [subset has:%(extra_left)r, superset has:%(extra_right)s]"):
-    """Assert that a dictionary is a strict subset of another dictionary (both keys and values)."""
+def assert_dict_subset(left, right, message=None):
+    """Assert that a dictionary is a strict subset of another dictionary.
+
+    Checks both keys and values.
+
+    """
     difference_dict = _dict_subtract(left, right)
 
     if not difference_dict:
@@ -457,32 +469,30 @@ def assert_dict_subset(left, right, msg="expected [subset has:%(extra_left)r, su
     extra_left = difference_dict
     small_right = dict((k, right[k]) for k in right if k in list(left.keys()))
     extra_right = _dict_subtract(small_right, left)
-    raise AssertionError(msg % {
-        'left': left,
-        'right': right,
-        'extra_left': extra_left,
-        'extra_right': extra_right,
-    })
+
+    if not message:
+        message = (
+            "[subset has:%(extra_left)r, superset has:%(extra_right)s]"
+        ) % locals()
+    raise AssertionError(message)
 
 
-def assert_subset(left, right, msg="expected %(set_left)r <= %(set_right)r [left has:%(extra)r]"):
+def assert_subset(left, right, message=None):
     """Assert that the left set is a subset of the right set."""
     set_left = set(left)
     set_right = set(right)
     if not (set_left <= set_right):
         extra = set_left - set_right
-        raise AssertionError(msg % {
-            'left': left,
-            'right': right,
-            'set_left': set_left,
-            'set_right': set_right,
-            'extra': extra,
-        })
+        if not message:
+            message = (
+                "expected %(set_left)r <= %(set_right)r [left has:%(extra)r]"
+            ) % locals()
+        raise AssertionError(message)
 
 
-def assert_list_prefix(left, right):
+def assert_list_prefix(left, right, message=None):
     """Assert that the left list is a prefix of the right list."""
-    assert_equal(left, right[:len(left)])
+    assert_equal(left, right[:len(left)], message)
 
 
 def assert_sorted_equal(left, right, **kwargs):
@@ -490,14 +500,20 @@ def assert_sorted_equal(left, right, **kwargs):
     assert_equal(sorted(left), sorted(right), **kwargs)
 
 
-def assert_isinstance(object_, type_):
+def assert_isinstance(object_, type_, message=None):
     """Assert that an object is an instance of a given type."""
-    assert isinstance(object_, type_), "Expected type %r but got type %r" % (type_, type(object_))
+    if not message:
+        message = "Expected type %r but got type %r" % (type_, type(object_))
+    assert isinstance(object_, type_), message
 
 
-def assert_datetimes_equal(a, b):
+def assert_datetimes_equal(a, b, message=None):
     """Tests for equality of times by only testing up to the millisecond."""
-    assert_equal(a.utctimetuple()[:-3], b.utctimetuple()[:-3], "%r != %r" % (a, b))
+    assert_equal(
+        a.utctimetuple()[:-3],
+        b.utctimetuple()[:-3],
+        message or "%r != %r" % (a, b)
+    )
 
 
 def assert_exactly_one(*args, **kwargs):

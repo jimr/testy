@@ -6,3 +6,4 @@ build
 tox-local.ini
 .tox
 */__pycache__
+.coverage
