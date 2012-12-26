@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 __title__ = 'testy'
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 __description__ = 'Python unittest helpers adapted from Testify'
 __url__ = 'https://github.com/jimr/testy'
 __author__ = 'James Rutherford'

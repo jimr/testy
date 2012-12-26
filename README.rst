@@ -10,13 +10,23 @@ The only requirement is ``six`` (for combined Python 2.x & 3.x support)::
     
     pip install -r requirements.txt
 
-Should work OK with Python 2.5-3.3 and pypy 1.9.
+Should work OK with Python 2.5-3.3 and pypy 1.9. To make sure it will work for you::
+
+    python setup.py test
 
 
 Installation
 ============
 
-Install direct from the cheese shop::
+From source::
+
+    pip install -e ./
+
+or::
+
+    python setup.py install
+
+Or you can just direct from the cheese shop::
 
     pip install testy
 

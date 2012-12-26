@@ -45,5 +45,6 @@ setup(
         ],
     license=get_init_val('license'),
     install_requires=['six'],
-    packages=PACKAGES
+    packages=PACKAGES,
+    test_suite='tests',
 )
