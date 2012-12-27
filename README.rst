@@ -24,7 +24,7 @@ or::
 
     python setup.py install
 
-Or you can just direct from the cheese shop::
+Or you can just install direct from the cheese shop::
 
     pip install testy
 
