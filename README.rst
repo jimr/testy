@@ -9,19 +9,13 @@ All the assertions from Testify_ but cleaned up a bit & with added py3k support.
 
 .. _Testify: https://github.com/Yelp/Testify
 
-Should work with Python 2.5-3.3 and pypy 1.9. To make sure it will work for you::
-
-    python setup.py test
-
-There are no dependencies.
+Should work with Python 2.5-3.3 and pypy 1.9. To make sure it will work for you: ``python setup.py test``.
 
 
 Installation
 ============
 
-Simply::
-
-    pip install testy
+There are no dependencies. Simply: ``pip install testy``
 
 
 Example Usage
