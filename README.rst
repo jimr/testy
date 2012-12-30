@@ -2,7 +2,7 @@
 Testy
 =====
 
-.. image:: https://travis-ci.org/jimr/testy.png?branch=master
+.. image:: https://travis-ci.org/jimr/testy.png
     :target: http://travis-ci.org/jimr/testy
 
 All the assertions from Testify_ but cleaned up a bit & with added py3k support.
@@ -19,15 +19,7 @@ There are no dependencies.
 Installation
 ============
 
-From source::
-
-    pip install -e ./
-
-or::
-
-    python setup.py install
-
-Or you can just install direct from the cheese shop::
+Simply::
 
     pip install testy
 
@@ -40,14 +32,14 @@ Example Usage
     import re
     import unittest
 
-    from testy.assertions import assert_equal, assert_raises, assert_match_regex
+    from testy.assertions import assert_dict_subset, assert_raises, assert_match_regex
 
     class MyTestCase(unittest.TestCase):
         def setUp(self):
-            self.x = 1
+            self.x = dict(a=1, b=2)
 
         def test_x(self):
-            assert_equal(self.x, 1)
+            assert_dict_subset(dict(b=2), self.x)
 
         def test_exception(self):
             with assert_raises(TypeError):
@@ -59,7 +51,6 @@ Example Usage
 
         def tearDown(self):
             self.x = None
-
 
     if __name__ == "__main__":
         unittest.main()
