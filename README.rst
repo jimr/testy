@@ -2,6 +2,9 @@
 Testy
 =====
 
+.. image:: https://travis-ci.org/jimr/testy.png?branch=master
+    :target: http://travis-ci.org/jimr/testy
+
 All the assertions from Testify_ but cleaned up a bit & with added py3k support.
 
 .. _Testify: https://github.com/Yelp/Testify
